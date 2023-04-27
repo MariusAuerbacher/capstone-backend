@@ -1,12 +1,16 @@
 import createError from "http-errors";
 import UserModel from "./model.js";
+import InstitutionModel from "../institutions/model.js";
 import express from "express";
 import { createAccessToken } from "../../lib/auth/tools.js";
 import passport from "passport";
 import { JWTAuthMiddleware } from "../../lib/auth/jwt.js";
 
 const userRouter = express.Router();
-
+const admin = {
+  email: process.env.ADMIN_EMAIL,
+  password: process.env.ADMIN_PASSWORD,
+};
 userRouter.post("/register", async (req, res, next) => {
   const { name, email, password } = req.body;
   const userExists = await UserModel.findOne({ email });
@@ -20,22 +24,34 @@ userRouter.post("/register", async (req, res, next) => {
     _id: user._id.toString(),
     role: "DONATOR",
   });
-  res.json({ user, token });
+  res.json({ user, token, role: "DONATOR" });
 });
 
 userRouter.post("/login", async (req, res, next) => {
   const { email, password } = req.body;
+
+  if (
+    email === process.env.ADMIN_EMAIL &&
+    password === process.env.ADMIN_PASSWORD
+  ) {
+    const token = await createAccessToken({
+      role: "ADMIN",
+    });
+    res.send({ token, user: admin, role: "ADMIN" });
+    return;
+  }
+
   const user = await UserModel.checkCredentials(email, password);
   console.log("user->", user);
   if (!user) {
-    return next({ status: 422, message: "Email or password is incorrect" });
+      return next({ status: 422, message: "Email or password is incorrect" });
   }
 
   const token = await createAccessToken({
     _id: user._id.toString(),
     role: "DONATOR",
   });
-  res.send({ token, user });
+  res.send({ token, user, role: "DONATOR" });
 });
 
 userRouter.get(
@@ -114,8 +130,8 @@ userRouter.put("/:userId", async (req, res, next) => {
 
 userRouter.delete("/:userId", async (req, res, next) => {
   try {
-    const deletedAuthor = await UserModel.findByIdAndUpdate(req.params.userId);
-    if (deletedAuthor) {
+    const deletedUser = await UserModel.findByIdAndUpdate(req.params.userId);
+    if (deletedUser) {
       res.status(204).send();
     } else {
       next(createError(404, `User with id ${req.params.userId} not found!`));

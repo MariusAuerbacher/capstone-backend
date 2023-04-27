@@ -11,6 +11,7 @@ import {
 import mongoose from "mongoose";
 import createHttpError from "http-errors";
 import userRouter from "./api/users/index.js";
+import institutionRouter from "./api/institutions/index.js";
 
 const server = Express();
 const port = process.env.PORT || 3001;
@@ -39,7 +40,10 @@ server.use(
 server.use(Express.json());
 
 // ****************************************** ENDPOINTS *****************************************
-server.use("/users", userRouter)
+server.use("/institutions", institutionRouter);
+server.use("/users", userRouter);
+
+
 // **************************************** ERROR HANDLERS **************************************
 server.use(badRequestHandler);
 server.use(notFoundHandler);
