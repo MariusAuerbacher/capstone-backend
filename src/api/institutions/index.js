@@ -9,7 +9,7 @@ const admin = {
   email: process.env.ADMIN_EMAIL,
   password: process.env.ADMIN_PASSWORD,
 };
-institutionRouter.post("/iregister", async (req, res, next) => {
+institutionRouter.post("/register", async (req, res, next) => {
   const { name, email, password } = req.body;
   const institutionExists = await InstitutionModel.findOne({ email });
   if (institutionExists) {
@@ -25,7 +25,7 @@ institutionRouter.post("/iregister", async (req, res, next) => {
   res.json({ institution, token, role: "INSTITUTION" });
 });
 
-institutionRouter.post("/ilogin", async (req, res, next) => {
+institutionRouter.post("/login", async (req, res, next) => {
   const { email, password } = req.body;
 
   if (

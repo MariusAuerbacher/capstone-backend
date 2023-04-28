@@ -5,12 +5,10 @@ import express from "express";
 import { createAccessToken } from "../../lib/auth/tools.js";
 import passport from "passport";
 import { JWTAuthMiddleware } from "../../lib/auth/jwt.js";
+import { admin } from "../../lib/auth/admin.js";
 
 const userRouter = express.Router();
-const admin = {
-  email: process.env.ADMIN_EMAIL,
-  password: process.env.ADMIN_PASSWORD,
-};
+
 userRouter.post("/register", async (req, res, next) => {
   const { name, email, password } = req.body;
   const userExists = await UserModel.findOne({ email });

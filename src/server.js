@@ -12,6 +12,11 @@ import mongoose from "mongoose";
 import createHttpError from "http-errors";
 import userRouter from "./api/users/index.js";
 import institutionRouter from "./api/institutions/index.js";
+import beneficiariesRouter from "./api/beneficiaries/index.js";
+import { JWTAuthMiddleware } from "./lib/auth/jwt.js";
+import userModel from "./api/users/model.js"
+import institutionModel from "./api/institutions/model.js"
+import { admin } from "./lib/auth/admin.js";
 
 const server = Express();
 const port = process.env.PORT || 3001;
@@ -42,7 +47,22 @@ server.use(Express.json());
 // ****************************************** ENDPOINTS *****************************************
 server.use("/institutions", institutionRouter);
 server.use("/users", userRouter);
+server.use("/beneficiaries", beneficiariesRouter)
+server.get("/profile", JWTAuthMiddleware, async(req, res, next) => {
+  if(req.user.role === "DONATOR"){
+    const donator = await userModel.findById(req.user._id)
+    res.send({user: donator, role: "DONATOR"})
 
+  } else if(req.user.role === "ADMIN") {
+    res.send({user: admin, role: "ADMIN"})
+
+  } else if (req.user.role === "INSTITUTION"){
+    const institution = await institutionModel.findById(req.user._id)
+    res.send({user: institution, role: "INSTITUTION"})
+  } else {
+    next({ status: 401, message: "Invalid role" })
+  }
+})
 
 // **************************************** ERROR HANDLERS **************************************
 server.use(badRequestHandler);
