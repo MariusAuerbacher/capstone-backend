@@ -17,6 +17,10 @@ import { JWTAuthMiddleware } from "./lib/auth/jwt.js";
 import userModel from "./api/users/model.js"
 import institutionModel from "./api/institutions/model.js"
 import { admin } from "./lib/auth/admin.js";
+import Stripe from "stripe";
+import paymentRouter from "./api/payments/index.js";
+
+const stripe = Stripe("sk_test_51N2vqiE6c8bqw472TgjjLv4J4vpD4olATqZ6C2l5lAXorXFdAxQbADxxymumZMVXgtSrq7O4mgl3kGMcsTIlYOIR00mipaEZSa")
 
 const server = Express();
 const port = process.env.PORT || 3001;
@@ -48,6 +52,7 @@ server.use(Express.json());
 server.use("/institutions", institutionRouter);
 server.use("/users", userRouter);
 server.use("/beneficiaries", beneficiariesRouter)
+server.use("/payments", paymentRouter)
 server.get("/profile", JWTAuthMiddleware, async(req, res, next) => {
   if(req.user.role === "DONATOR"){
     const donator = await userModel.findById(req.user._id)
@@ -63,6 +68,7 @@ server.get("/profile", JWTAuthMiddleware, async(req, res, next) => {
     next({ status: 401, message: "Invalid role" })
   }
 })
+
 
 // **************************************** ERROR HANDLERS **************************************
 server.use(badRequestHandler);

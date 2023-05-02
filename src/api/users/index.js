@@ -42,7 +42,7 @@ userRouter.post("/login", async (req, res, next) => {
   const user = await UserModel.checkCredentials(email, password);
   console.log("user->", user);
   if (!user) {
-      return next({ status: 422, message: "Email or password is incorrect" });
+    return next({ status: 422, message: "Email or password is incorrect" });
   }
 
   const token = await createAccessToken({

@@ -96,6 +96,18 @@ institutionRouter.get("/me", async (req, res, next) => {
   }
 });
 
+
+
+institutionRouter.get("/", async (req, res, next) => {
+  try {
+    const institutions = await InstitutionModel.find();
+    res.send(institutions);
+  } catch (error) {
+    next(error);
+  }
+});
+
+
 institutionRouter.get("/:institutionId", async (req, res, next) => {
   try {
     const institution = await InstitutionModel.findById(
