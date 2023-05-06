@@ -19,6 +19,8 @@ import institutionModel from "./api/institutions/model.js"
 import { admin } from "./lib/auth/admin.js";
 import Stripe from "stripe";
 import paymentRouter from "./api/payments/index.js";
+import googleStrategy from "./lib/auth/googleOauth.js"
+import passport from "passport"
 
 const stripe = Stripe("sk_test_51N2vqiE6c8bqw472TgjjLv4J4vpD4olATqZ6C2l5lAXorXFdAxQbADxxymumZMVXgtSrq7O4mgl3kGMcsTIlYOIR00mipaEZSa")
 
@@ -27,7 +29,7 @@ const port = process.env.PORT || 3001;
 
 const publicFolderPath = join(process.cwd(), "./public");
 server.use(Express.static(publicFolderPath));
-
+passport.use("google", googleStrategy) 
 // **************************************** MIDDLEWARES *****************************************
 const whitelist = [process.env.FE_DEV_URL, process.env.FE_PROD_URL];
 server.use(
@@ -47,7 +49,7 @@ server.use(
   })
 );
 server.use(Express.json());
-
+server.use(passport.initialize())
 // ****************************************** ENDPOINTS *****************************************
 server.use("/institutions", institutionRouter);
 server.use("/users", userRouter);
