@@ -7,16 +7,15 @@ const InstitutionSchema = new Schema(
   {
     name: { type: String, required: true },
     email: { type: String, required: true },
-    type: { type: String, required: true },
+    category: { type: String, required: true },
     description: { type: String, required: true },
     number: { type: Number, required: true },
     address: { type: String, required: true },
-    paymentOptions: { type: String, required: true },
-    politics: { type: String, required: true },
-    image: { type: String, required: true },
+    paymentOptions: { type: String },
+    politics: { type: Boolean},
+    image: { type: String },
     password: { type: String, required: true },
-    
-      },
+  },
   {
     timestamps: true,
   }
@@ -54,6 +53,5 @@ InstitutionSchema.static("checkCredentials", async function (email, plainPW) {
     return null;
   }
 });
-
 
 export default model("Institution", InstitutionSchema);

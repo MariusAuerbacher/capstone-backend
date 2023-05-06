@@ -10,12 +10,34 @@ const admin = {
   password: process.env.ADMIN_PASSWORD,
 };
 institutionRouter.post("/register", async (req, res, next) => {
-  const { name, email, password } = req.body;
+  const {
+    name,
+    email,
+    password,
+    category,
+    description,
+    address,
+    image,
+    number,
+    politics,
+    paymentOptions,
+  } = req.body;
   const institutionExists = await InstitutionModel.findOne({ email });
   if (institutionExists) {
     return next({ status: 422, message: "Email already exists" });
   }
-  const institution = new InstitutionModel({ name, email, password });
+  const institution = new InstitutionModel({
+    name,
+    email,
+    password,
+    category,
+    description,
+    address,
+    image,
+    number,
+    politics,
+    paymentOptions,
+  });
   console.log(institution);
   await institution.save();
   const token = await createAccessToken({
@@ -96,8 +118,6 @@ institutionRouter.get("/me", async (req, res, next) => {
   }
 });
 
-
-
 institutionRouter.get("/", async (req, res, next) => {
   try {
     const institutions = await InstitutionModel.find();
@@ -106,7 +126,6 @@ institutionRouter.get("/", async (req, res, next) => {
     next(error);
   }
 });
-
 
 institutionRouter.get("/:institutionId", async (req, res, next) => {
   try {
