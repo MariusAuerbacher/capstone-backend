@@ -11,13 +11,14 @@ const BeneficiariesSchema = new Schema(
     description: { type: String, required: true },
     number: { type: Number, required: true },
     address: { type: String, required: true },
-    paymentOptions: [{ type: String, required: true }],
+    paymentOptions: [{ type: Boolean, required: true }],
     image: { type: String, required: true },
     password: { type: String, required: true },
     institution: {
       type: Schema.Types.ObjectId,
       ref: "Institution",
     },
+    remember: { type: Boolean },
   },
   {
     timestamps: true,

@@ -11,10 +11,11 @@ const InstitutionSchema = new Schema(
     description: { type: String, required: true },
     number: { type: Number, required: true },
     address: { type: String, required: true },
-    paymentOptions: { type: String },
+    paymentOptions: [{ type: Boolean }],
     politics: { type: Boolean},
     image: { type: String },
     password: { type: String, required: true },
+    remember:{ type: Boolean},
   },
   {
     timestamps: true,

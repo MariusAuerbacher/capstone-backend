@@ -10,26 +10,56 @@ const admin = {
   email: process.env.ADMIN_EMAIL,
   password: process.env.ADMIN_PASSWORD,
 };
-beneficiariesRouter.post("/register", JWTAuthMiddleware, async (req, res, next) => {
-  if(req.user.role !== "INSTITUTION"){
-    return next({ status: 401, message: "Only Institutions can add a beneficiary" })
+beneficiariesRouter.post(
+  "/register",
+  JWTAuthMiddleware,
+  async (req, res, next) => {
+    if (req.user.role !== "INSTITUTION") {
+      return next({
+        status: 401,
+        message: "Only Institutions can add a beneficiary",
+      });
+    }
+    const {
+      name,
+      email,
+      category,
+      description,
+      address,
+      number,
+      paymentOptions,
+      image,
+      password,
+    } = req.body;
+    const beneficiaryExists = await BeneficiariesModel.findOne({ email });
+    if (beneficiaryExists) {
+      return next({ status: 422, message: "Email already exists" });
+    }
+    const beneficiary = new BeneficiariesModel({
+      name,
+      email,
+      category,
+      description,
+      address,
+      number,
+      paymentOptions,
+      image,
+      password,
+      institution: req.user._id,
+    });
+    console.log(beneficiary);
+    await beneficiary.save();
+    res.json({ beneficiary });
   }
-  const { name, email, category, description, address, number, paymentOptions, image, password } = req.body;
-  const beneficiaryExists = await BeneficiariesModel.findOne({ email });
-  if (beneficiaryExists) {
-    return next({ status: 422, message: "Email already exists" });
-  }
-  const beneficiary = new BeneficiariesModel({ name, email, category, description, address, number, paymentOptions, image, password, institution: req.user._id });
-  console.log(beneficiary);
-  await beneficiary.save();
-  res.json({ beneficiary });
-});
+);
 
 beneficiariesRouter.post("/login", async (req, res, next) => {
   const { email, password } = req.body;
 
-  
-  const beneficiary = await BeneficiariesModel.checkCredentials(email, password);
+  const beneficiary = await BeneficiariesModel.checkCredentials(
+    email,
+    password
+  );
   console.log("beneficiary->", beneficiary);
   if (!beneficiary) {
     return next({ status: 422, message: "Email or password is incorrect" });
@@ -86,16 +116,16 @@ beneficiariesRouter.get("/me", async (req, res, next) => {
   }
 });
 
-
 beneficiariesRouter.get("/", async (req, res, next) => {
   try {
-    const beneficiaries = await BeneficiariesModel.find().populate("institution");
+    const beneficiaries = await BeneficiariesModel.find().populate(
+      "institution"
+    );
     res.send(beneficiaries);
   } catch (error) {
     next(error);
   }
 });
-
 
 beneficiariesRouter.get("/:beneficiaryId", async (req, res, next) => {
   try {

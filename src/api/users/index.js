@@ -1,6 +1,5 @@
 import createError from "http-errors";
 import UserModel from "./model.js";
-import InstitutionModel from "../institutions/model.js";
 import express from "express";
 import { createAccessToken } from "../../lib/auth/tools.js";
 import passport from "passport";
@@ -91,6 +90,15 @@ userRouter.get("/me", JWTAuthMiddleware, async (req, res, next) => {
   try {
     const user = await UserModel.findById(req.user._id);
     res.send(user);
+  } catch (error) {
+    next(error);
+  }
+});
+
+userRouter.get("/", async (req, res, next) => {
+  try {
+    const users = await UserModel.find();
+    res.send(users);
   } catch (error) {
     next(error);
   }
