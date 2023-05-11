@@ -2,6 +2,7 @@ import express from "express";
 import { JWTAuthMiddleware } from "../../lib/auth/jwt.js";
 import PaymentModel from "./model.js";
 import Stripe from "stripe";
+import { sendDonationEmail } from "../../lib/email.js";
 const stripe = Stripe(
   "sk_test_51N2vqiE6c8bqw472TgjjLv4J4vpD4olATqZ6C2l5lAXorXFdAxQbADxxymumZMVXgtSrq7O4mgl3kGMcsTIlYOIR00mipaEZSa"
 );
@@ -16,7 +17,7 @@ paymentRouter.post("/", JWTAuthMiddleware, async (req, res, next) => {
     donator: req.user._id,
   });
   await payment.save();
-
+  await sendDonationEmail(req.user._id, institution)
   res.send(payment);
 });
 

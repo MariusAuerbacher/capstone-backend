@@ -5,6 +5,7 @@ import { createAccessToken } from "../../lib/auth/tools.js";
 import passport from "passport";
 import { JWTAuthMiddleware } from "../../lib/auth/jwt.js";
 import { admin } from "../../lib/auth/admin.js";
+import { sendPasswordResetEmail } from "../../lib/email.js";
 
 const userRouter = express.Router();
 
@@ -147,4 +148,16 @@ userRouter.delete("/:userId", async (req, res, next) => {
   }
 });
 
+
+userRouter.post("/password-reset", async (req, res, next) => {
+  try{
+    const user = await UserModel.findOne({email: req.body.email})
+    user.password = "12345"
+    await user.save()
+    await sendPasswordResetEmail(user.name, user.email, "12345")
+    res.send("Password reset")
+  } catch (error) {
+    next(error);
+  }
+})
 export default userRouter;
