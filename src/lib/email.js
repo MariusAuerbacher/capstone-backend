@@ -5,14 +5,14 @@ import { createTransport } from "nodemailer"
 const transport = createTransport({
   service: "gmail",
   auth: {
-    user: "mfb.auerbacher@gmail.com",
-    pass: "epcuyhwxndppkzzw"
+    user: process.env.EMAIL,
+    pass: process.env.APP_PASSWORD
   }
 })
 
 const sendEmail = async(to, subject, html) =>{
   await transport.sendMail({
-    from: "mfb.auerbacher@gmail.com",
+    from: process.env.EMAIL,
     to,
     subject,
     html
