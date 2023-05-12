@@ -21,6 +21,7 @@ institutionRouter.post("/register", async (req, res, next) => {
     number,
     politics,
     paymentOptions,
+    rememberMe = false
   } = req.body;
   const institutionExists = await InstitutionModel.findOne({ email });
   if (institutionExists) {
@@ -43,12 +44,12 @@ institutionRouter.post("/register", async (req, res, next) => {
   const token = await createAccessToken({
     _id: institution._id.toString(),
     role: "INSTITUTION",
-  });
+  }, rememberMe === true? "4 weeks" : "1 day");
   res.json({ institution, token, role: "INSTITUTION" });
 });
 
 institutionRouter.post("/login", async (req, res, next) => {
-  const { email, password } = req.body;
+  const { email, password, rememberMe = false } = req.body;
 
   if (
     email === process.env.ADMIN_EMAIL &&
@@ -56,7 +57,7 @@ institutionRouter.post("/login", async (req, res, next) => {
   ) {
     const token = await createAccessToken({
       role: "ADMIN",
-    });
+    }, rememberMe === true? "4 weeks" : "1 day");
     res.send({ token, institution: admin, role: "ADMIN" });
     return;
   }

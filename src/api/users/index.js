@@ -10,7 +10,7 @@ import { sendPasswordResetEmail } from "../../lib/email.js";
 const userRouter = express.Router();
 
 userRouter.post("/register", async (req, res, next) => {
-  const { name, email, password } = req.body;
+  const { name, email, password, rememberMe = false } = req.body;
   const userExists = await UserModel.findOne({ email });
   if (userExists) {
     return next({ status: 422, message: "Email already exists" });
@@ -21,12 +21,13 @@ userRouter.post("/register", async (req, res, next) => {
   const token = await createAccessToken({
     _id: user._id.toString(),
     role: "DONATOR",
-  });
+
+  }, rememberMe === true? "4 weeks" : "1 day");
   res.json({ user, token, role: "DONATOR" });
 });
 
 userRouter.post("/login", async (req, res, next) => {
-  const { email, password } = req.body;
+  const { email, password, rememberMe = false } = req.body;
 
   if (
     email === process.env.ADMIN_EMAIL &&
@@ -34,7 +35,8 @@ userRouter.post("/login", async (req, res, next) => {
   ) {
     const token = await createAccessToken({
       role: "ADMIN",
-    });
+    }, rememberMe === true? "4 weeks" : "1 day"
+    );
     res.send({ token, user: admin, role: "ADMIN" });
     return;
   }
@@ -48,7 +50,7 @@ userRouter.post("/login", async (req, res, next) => {
   const token = await createAccessToken({
     _id: user._id.toString(),
     role: "DONATOR",
-  });
+  }, rememberMe === true? "4 weeks" : "1 day");
   res.send({ token, user, role: "DONATOR" });
 });
 

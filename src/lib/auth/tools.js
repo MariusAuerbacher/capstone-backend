@@ -3,12 +3,12 @@ import jwt from "jsonwebtoken";
 
 
 
-export const createAccessToken = (payload)=>
+export const createAccessToken = (payload, expiresIn)=>
   new Promise((resolve, reject) =>
     jwt.sign(
       payload,
       process.env.JWT_SECRET,
-      { expiresIn: "4 weeks" },
+      { expiresIn},
       (err, token) => {
         if (err) reject(err);
         else resolve(token);

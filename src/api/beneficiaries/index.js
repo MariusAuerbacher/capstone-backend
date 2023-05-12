@@ -54,7 +54,7 @@ beneficiariesRouter.post(
 );
 
 beneficiariesRouter.post("/login", async (req, res, next) => {
-  const { email, password } = req.body;
+  const { email, password, rememberMe = false } = req.body;
 
   const beneficiary = await BeneficiariesModel.checkCredentials(
     email,
@@ -65,10 +65,13 @@ beneficiariesRouter.post("/login", async (req, res, next) => {
     return next({ status: 422, message: "Email or password is incorrect" });
   }
 
-  const token = await createAccessToken({
-    _id: beneficiary._id.toString(),
-    role: "BENEFICIARY",
-  });
+  const token = await createAccessToken(
+    {
+      _id: beneficiary._id.toString(),
+      role: "BENEFICIARY",
+    },
+    rememberMe === true ? "4 weeks" : "1 day"
+  );
   res.send({ token, beneficiary, role: "BENEFICIARY" });
 });
 
