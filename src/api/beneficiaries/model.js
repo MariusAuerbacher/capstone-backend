@@ -19,6 +19,16 @@ const BeneficiariesSchema = new Schema(
       ref: "Institution",
     },
     remember: { type: Boolean },
+    location: {
+      type: {
+        type: String,
+        enum: ["Point"]
+        },
+        coordinates: {
+          type: [Number],
+        },
+    }
+
   },
   {
     timestamps: true,

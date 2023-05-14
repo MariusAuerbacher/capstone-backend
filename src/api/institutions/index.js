@@ -71,7 +71,7 @@ institutionRouter.post("/login", async (req, res, next) => {
   const token = await createAccessToken({
     _id: institution._id.toString(),
     role: "INSTITUTION",
-  });
+  }, rememberMe === true? "4 weeks" : "1 day");
   res.send({ token, institution, role: "INSTITUTION" });
 });
 
