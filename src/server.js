@@ -1,3 +1,9 @@
+/*import dotenv from "dotenv";
+
+dotenv.config({
+  path: "../.env",
+});*/
+
 import { join } from "path";
 import Express from "express";
 import listEndpoints from "express-list-endpoints";
@@ -14,22 +20,23 @@ import userRouter from "./api/users/index.js";
 import institutionRouter from "./api/institutions/index.js";
 import beneficiariesRouter from "./api/beneficiaries/index.js";
 import { JWTAuthMiddleware } from "./lib/auth/jwt.js";
-import userModel from "./api/users/model.js"
-import institutionModel from "./api/institutions/model.js"
+import userModel from "./api/users/model.js";
+import institutionModel from "./api/institutions/model.js";
 import { admin } from "./lib/auth/admin.js";
 import Stripe from "stripe";
 import paymentRouter from "./api/payments/index.js";
-import googleStrategy from "./lib/auth/googleOauth.js"
-import passport from "passport"
+import googleStrategy from "./lib/auth/googleOauth.js";
+import passport from "passport";
 
-const stripe = Stripe(process.env. STRIPE_KEY)
+console.log(process.env.STRIPE_KEY)
+const stripe = Stripe(process.env.STRIPE_KEY);
 
 const server = Express();
 const port = process.env.PORT || 3001;
 
 const publicFolderPath = join(process.cwd(), "./public");
 server.use(Express.static(publicFolderPath));
-passport.use("google", googleStrategy) 
+passport.use("google", googleStrategy);
 // **************************************** MIDDLEWARES *****************************************
 const whitelist = [process.env.FE_DEV_URL, process.env.FE_PROD_URL];
 server.use(
@@ -49,28 +56,25 @@ server.use(
   })
 );
 server.use(Express.json());
-server.use(passport.initialize())
+server.use(passport.initialize());
 // ****************************************** ENDPOINTS *****************************************
 server.use("/institutions", institutionRouter);
 server.use("/users", userRouter);
-server.use("/beneficiaries", beneficiariesRouter)
-server.use("/payments", paymentRouter)
-server.get("/profile", JWTAuthMiddleware, async(req, res, next) => {
-  if(req.user.role === "DONATOR"){
-    const donator = await userModel.findById(req.user._id)
-    res.send({user: donator, role: "DONATOR"})
-
-  } else if(req.user.role === "ADMIN") {
-    res.send({user: admin, role: "ADMIN"})
-
-  } else if (req.user.role === "INSTITUTION"){
-    const institution = await institutionModel.findById(req.user._id)
-    res.send({user: institution, role: "INSTITUTION"})
+server.use("/beneficiaries", beneficiariesRouter);
+server.use("/payments", paymentRouter);
+server.get("/profile", JWTAuthMiddleware, async (req, res, next) => {
+  if (req.user.role === "DONATOR") {
+    const donator = await userModel.findById(req.user._id);
+    res.send({ user: donator, role: "DONATOR" });
+  } else if (req.user.role === "ADMIN") {
+    res.send({ user: admin, role: "ADMIN" });
+  } else if (req.user.role === "INSTITUTION") {
+    const institution = await institutionModel.findById(req.user._id);
+    res.send({ user: institution, role: "INSTITUTION" });
   } else {
-    next({ status: 401, message: "Invalid role" })
+    next({ status: 401, message: "Invalid role" });
   }
-})
-
+});
 
 // **************************************** ERROR HANDLERS **************************************
 server.use(badRequestHandler);

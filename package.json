@@ -7,7 +7,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon -r dotenv/config -e js ./src/server.js",
-    "start": "node ./src/server.js"
+    "start": "node  -r dotenv/config ./src/server.js"
   },
   "repository": {
     "type": "git",
@@ -26,6 +26,7 @@
     "bcrypt": "^5.1.0",
     "cloudinary": "^1.35.0",
     "cors": "^2.8.5",
+    "dotenv": "^16.0.3",
     "express": "^4.18.2",
     "express-list-endpoints": "^6.0.0",
     "express-validator": "^6.15.0",
@@ -43,7 +44,6 @@
     "stripe": "^12.3.0"
   },
   "devDependencies": {
-    "dotenv": "^16.0.3",
     "nodemon": "^2.0.21"
   }
 }
