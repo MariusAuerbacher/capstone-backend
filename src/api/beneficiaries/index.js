@@ -30,7 +30,7 @@ beneficiariesRouter.post(
       paymentOptions,
       image,
       password,
-      location
+      location,
     } = req.body;
     const beneficiaryExists = await BeneficiariesModel.findOne({ email });
     if (beneficiaryExists) {
@@ -47,7 +47,7 @@ beneficiariesRouter.post(
       image,
       password,
       institution: req.user._id,
-      location
+      location,
     });
     console.log(beneficiary);
     await beneficiary.save();

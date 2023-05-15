@@ -22,7 +22,7 @@ import paymentRouter from "./api/payments/index.js";
 import googleStrategy from "./lib/auth/googleOauth.js"
 import passport from "passport"
 
-const stripe = Stripe("sk_test_51N2vqiE6c8bqw472TgjjLv4J4vpD4olATqZ6C2l5lAXorXFdAxQbADxxymumZMVXgtSrq7O4mgl3kGMcsTIlYOIR00mipaEZSa")
+const stripe = Stripe(process.env. STRIPE_KEY)
 
 const server = Express();
 const port = process.env.PORT || 3001;
