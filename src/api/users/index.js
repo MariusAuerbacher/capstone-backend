@@ -18,11 +18,13 @@ userRouter.post("/register", async (req, res, next) => {
   const user = new UserModel({ name, email, password });
   console.log(user);
   await user.save();
-  const token = await createAccessToken({
-    _id: user._id.toString(),
-    role: "DONATOR",
-
-  }, rememberMe === true? "4 weeks" : "1 day");
+  const token = await createAccessToken(
+    {
+      _id: user._id.toString(),
+      role: "DONATOR",
+    },
+    rememberMe === true ? "4 weeks" : "1 day"
+  );
   res.json({ user, token, role: "DONATOR" });
 });
 
@@ -33,9 +35,11 @@ userRouter.post("/login", async (req, res, next) => {
     email === process.env.ADMIN_EMAIL &&
     password === process.env.ADMIN_PASSWORD
   ) {
-    const token = await createAccessToken({
-      role: "ADMIN",
-    }, rememberMe === true? "4 weeks" : "1 day"
+    const token = await createAccessToken(
+      {
+        role: "ADMIN",
+      },
+      rememberMe === true ? "4 weeks" : "1 day"
     );
     res.send({ token, user: admin, role: "ADMIN" });
     return;
@@ -47,10 +51,13 @@ userRouter.post("/login", async (req, res, next) => {
     return next({ status: 422, message: "Email or password is incorrect" });
   }
 
-  const token = await createAccessToken({
-    _id: user._id.toString(),
-    role: "DONATOR",
-  }, rememberMe === true? "4 weeks" : "1 day");
+  const token = await createAccessToken(
+    {
+      _id: user._id.toString(),
+      role: "DONATOR",
+    },
+    rememberMe === true ? "4 weeks" : "1 day"
+  );
   res.send({ token, user, role: "DONATOR" });
 });
 
@@ -150,16 +157,15 @@ userRouter.delete("/:userId", async (req, res, next) => {
   }
 });
 
-
 userRouter.post("/password-reset", async (req, res, next) => {
-  try{
-    const user = await UserModel.findOne({email: req.body.email})
-    user.password = "12345"
-    await user.save()
-    await sendPasswordResetEmail(user.name, user.email, "12345")
-    res.send("Password reset")
+  try {
+    const user = await UserModel.findOne({ email: req.body.email });
+    user.password = "12345";
+    await user.save();
+    await sendPasswordResetEmail(user.name, user.email, "12345");
+    res.send("Password reset");
   } catch (error) {
     next(error);
   }
-})
+});
 export default userRouter;
