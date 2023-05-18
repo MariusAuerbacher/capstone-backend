@@ -28,8 +28,9 @@ export const sendPasswordResetEmail = async (
     userEmail,
     "Password Reset Confirmation",
     `
-  <p> Dear ${userName},
-  this is your new Password: ${userNewPassword} .Please make sure to change it after loggin in. <p>
+   <p>Dear <strong>${userName}</strong>,</p>
+ <p>this is your new Password: ${userNewPassword}.<p>
+ <p>Please make sure to change it after loggin in. </p>
   `
   );
 };
@@ -41,8 +42,10 @@ export const sendDonationEmail = async (userId, institutionId) => {
     user.email,
     "Thanks for donating",
     `
-  <p> Dear ${user.name},
-  thank you for donating, we would like to let you know that we have received your donation <p>
+    <p>Dear <strong>${user.name}</strong>,</p>
+    <p>thank you for donating!</p> 
+    <p>we would like to let you know that we have received your donation from ${user.name}.</p>
+    <p>Your Ummati Team</p>
   `
   );
 
@@ -50,8 +53,9 @@ export const sendDonationEmail = async (userId, institutionId) => {
     institution.email,
     "Thanks for donating",
     `
-  <p> Dear ${institution.name},
-  we would like to let you know that we have sent you a donation<p>
+  <p>Dear <strong>${institution.name}</strong>,</p>
+  <p>we would like to let you know that we have sent you a donation.<p>
+  <p>Your Ummati Team.</p>
   `
   );
 };
