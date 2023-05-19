@@ -134,16 +134,20 @@ beneficiariesRouter.get("/", async (req, res, next) => {
   }
 });
 
-beneficiariesRouter.get("/institution", JWTAuthMiddleware, async (req, res, next) => {
-  try {
-    const beneficiaries = await BeneficiariesModel.find({institution: req.user._id}).populate(
-      "institution"
-    );
-    res.send(beneficiaries);
-  } catch (error) {
-    next(error);
+beneficiariesRouter.get(
+  "/institution",
+  JWTAuthMiddleware,
+  async (req, res, next) => {
+    try {
+      const beneficiaries = await BeneficiariesModel.find({
+        institution: req.user._id,
+      }).populate("institution");
+      res.send(beneficiaries);
+    } catch (error) {
+      next(error);
+    }
   }
-});
+);
 
 beneficiariesRouter.get("/:beneficiaryId", async (req, res, next) => {
   try {
