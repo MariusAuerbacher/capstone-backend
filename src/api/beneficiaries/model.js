@@ -11,6 +11,7 @@ const BeneficiariesSchema = new Schema(
     description: { type: String, required: true },
     number: { type: Number, required: true },
     address: { type: String, required: true },
+    country: { type: String, required: true },
     paymentOptions: [{ type: String, required: true }],
     image: { type: String },
     password: { type: String, required: true },

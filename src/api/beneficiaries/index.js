@@ -26,6 +26,7 @@ beneficiariesRouter.post(
       category,
       description,
       address,
+      country,
       number,
       paymentOptions,
       image,
@@ -42,6 +43,7 @@ beneficiariesRouter.post(
       category,
       description,
       address,
+      country,
       number,
       paymentOptions,
       image,
@@ -124,6 +126,17 @@ beneficiariesRouter.get("/me", async (req, res, next) => {
 beneficiariesRouter.get("/", async (req, res, next) => {
   try {
     const beneficiaries = await BeneficiariesModel.find().populate(
+      "institution"
+    );
+    res.send(beneficiaries);
+  } catch (error) {
+    next(error);
+  }
+});
+
+beneficiariesRouter.get("/institution", JWTAuthMiddleware, async (req, res, next) => {
+  try {
+    const beneficiaries = await BeneficiariesModel.find({institution: req.user._id}).populate(
       "institution"
     );
     res.send(beneficiaries);
