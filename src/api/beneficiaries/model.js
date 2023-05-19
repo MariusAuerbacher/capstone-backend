@@ -12,7 +12,7 @@ const BeneficiariesSchema = new Schema(
     number: { type: Number, required: true },
     address: { type: String, required: true },
     paymentOptions: [{ type: String, required: true }],
-    image: { type: String, required: true },
+    image: { type: String },
     password: { type: String, required: true },
     institution: {
       type: Schema.Types.ObjectId,
@@ -22,13 +22,12 @@ const BeneficiariesSchema = new Schema(
     location: {
       type: {
         type: String,
-        enum: ["Point"]
-        },
-        coordinates: {
-          type: [Number],
-        },
-    }
-
+        enum: ["Point"],
+      },
+      coordinates: {
+        type: [Number],
+      },
+    },
   },
   {
     timestamps: true,
