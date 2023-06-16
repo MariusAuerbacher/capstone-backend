@@ -18,13 +18,13 @@ userRouter.post("/register", async (req, res, next) => {
   const user = new UserModel({ name, email, password });
   console.log(user);
   await user.save();
-  const token = await createAccessToken(
+  /*const token = await createAccessToken(
     {
       _id: user._id.toString(),
       role: "DONATOR",
     },
     rememberMe === true ? "4 weeks" : "1 day"
-  );
+  );*/
   res.json({ user, token, role: "DONATOR" });
 });
 
