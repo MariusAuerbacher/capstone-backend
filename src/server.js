@@ -28,7 +28,6 @@ import paymentRouter from "./api/payments/index.js";
 import googleStrategy from "./lib/auth/googleOauth.js";
 import passport from "passport";
 
-console.log(process.env.STRIPE_KEY);
 const stripe = Stripe(process.env.STRIPE_KEY);
 
 const server = Express();
